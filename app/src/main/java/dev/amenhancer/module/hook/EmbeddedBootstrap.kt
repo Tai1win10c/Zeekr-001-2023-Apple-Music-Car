@@ -1,5 +1,6 @@
 package dev.amenhancer.module.hook
 
+import dev.amenhancer.host.applemusic.AppleMusicHostProfiles
 import dev.amenhancer.module.config.ConfigurationReader
 import android.os.ParcelFileDescriptor
 import java.io.InputStream
@@ -7,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
 
 /** Exact-version bootstrap for the embedded-only artifact. */
-internal class EmbeddedBootstrap {
+internal class EmbeddedBootstrap(private val allowCarPreview: Boolean = false) {
     private val prepared = AtomicBoolean(false)
     private val deferredReader = DeferredConfigurationReader()
 
@@ -35,6 +36,11 @@ internal class EmbeddedBootstrap {
         dev.amenhancer.host.applemusic.AppleMusicHostProfiles.isProductionBuild(
             build.packageName, build.versionName, build.versionCode,
         )
+
+    fun isCarPreview(build: TargetBuild): Boolean =
+        allowCarPreview && AppleMusicHostProfiles.findZeekr1472Preview(
+            build.packageName, build.versionName, build.versionCode,
+        ) != null
 
     private class DeferredConfigurationReader : ConfigurationReader {
         private val delegate = AtomicReference<ConfigurationReader?>(null)

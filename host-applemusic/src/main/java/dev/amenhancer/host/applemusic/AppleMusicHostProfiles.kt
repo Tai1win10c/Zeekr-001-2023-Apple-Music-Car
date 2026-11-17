@@ -35,6 +35,14 @@ object AppleMusicHostProfiles {
         return load(name)
     }
 
+    /** The private debug preview has its own lifecycle and is excluded from normal profiles. */
+    fun findZeekr1472Preview(packageName: String, versionName: String, versionCode: Long): AppleMusicHostProfile? =
+        if (packageName == "com.apple.android.music" && versionName == "4.9.7.2" && versionCode == 1472L) {
+            load("4.9.7.2-1472.json").takeIf {
+                !it.productionEnabled && it.document.optJSONObject("zeekr1472DualPane")?.optInt("contractVersion") == 1
+            }
+        } else null
+
     fun isProductionBuild(packageName: String, versionName: String, versionCode: Long): Boolean =
         find(packageName, versionName, versionCode)?.productionEnabled == true
 

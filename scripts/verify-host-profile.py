@@ -142,11 +142,6 @@ def verify_fragment_contracts(document, classes, failures):
     """Cover declared helper/binding/constructor dependencies as well as indexed hooks."""
     if document.get('family') != 'fragment-content':
         return 0
-    primitive = {'void': 'V', 'int': 'I', 'long': 'J', 'float': 'F', 'boolean': 'Z',
-                 'double': 'D', 'byte': 'B', 'short': 'S', 'char': 'C'}
-    def descriptor(name):
-        return primitive.get(name, name.replace('.', '/') if name.startswith('[')
-                             else 'L' + name.replace('.', '/') + ';')
     sections = {name: document.get(name) for name in (
         'fragmentDualPane', 'fragmentLyricsRuntime', 'fragmentKaraokeWidth', 'fragmentTabletVideoHandoff',
         'lyricPronunciation')}
@@ -267,6 +262,15 @@ def verify_fragment_contracts(document, classes, failures):
     for role in ('artwork', 'metadata', 'controls', 'progress', 'binding', 'restoration'):
         if not str(main.get('layoutReview', {}).get(role, '')).strip():
             failures.append(f'fragmentDualPane.layoutReview.{role}: missing comparison evidence')
+    return verify_member_sections(sections, classes, failures)
+
+
+def verify_member_sections(sections, classes, failures):
+    primitive = {'void': 'V', 'int': 'I', 'long': 'J', 'float': 'F', 'boolean': 'Z',
+                 'double': 'D', 'byte': 'B', 'short': 'S', 'char': 'C'}
+    def descriptor(name):
+        return primitive.get(name, name.replace('.', '/') if name.startswith('[')
+                             else 'L' + name.replace('.', '/') + ';')
     checks = 0
     for section, data in sections.items():
         if (not isinstance(data, dict) or not data.get('methods') or
@@ -299,6 +303,21 @@ def verify_fragment_contracts(document, classes, failures):
                         failures.append(f'{section}.{group}.{role}: invalid exact descriptor {contract}')
                 except (KeyError, TypeError, AttributeError) as error:
                     failures.append(f'{section}.{group}.{role}: incomplete descriptor ({error})')
+    return checks
+
+
+def verify_zeekr_preview(document, classes, available_layouts, failures):
+    preview = document.get('zeekr1472DualPane')
+    if preview is None:
+        return 0
+    if (document.get('productionEnabled') or document.get('versionName') != '4.9.7.2'
+            or document.get('versionCode') != 1472 or preview.get('contractVersion') != 1):
+        failures.append('zeekr1472DualPane: preview must remain on the experimental 1472 profile')
+    checks = verify_member_sections({'zeekr1472DualPane': preview}, classes, failures)
+    for layout in ('res/layout/fragment_player_main.xml', 'res/layout/fragment_player_lyrics_sheet.xml'):
+        checks += 1
+        if layout not in available_layouts:
+            failures.append('missing car preview layout ' + layout)
     return checks
 
 
@@ -560,6 +579,7 @@ def main():
                 document = json.loads(candidate.read_text(encoding="utf-8"))
         if document:
             checks += verify_fragment_contracts(document, classes, failures)
+            checks += verify_zeekr_preview(document, classes, available_layouts, failures)
             checks += verify_artist_compose_contract(document, classes, failures)
             checks += verify_lyric_blur_contract(document, classes, failures)
             checks += verify_lyric_result_submission(document, classes, failures)

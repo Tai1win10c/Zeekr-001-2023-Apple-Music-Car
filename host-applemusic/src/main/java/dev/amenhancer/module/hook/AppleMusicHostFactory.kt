@@ -7,10 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import dev.amenhancer.host.applemusic.AppleMusicHostProfile
+import dev.amenhancer.host.applemusic.AppleMusicHostProfiles
 import dev.amenhancer.module.config.TargetConfigClient
 
 /** Apple Music composition; the application supplies configuration and automatic-lyric services. */
 object AppleMusicHostFactory {
+    fun installZeekr1472Preview(application: Application, loader: ClassLoader) {
+        val build = targetBuild(application)
+        val profile = checkNotNull(AppleMusicHostProfiles.findZeekr1472Preview(
+            build.packageName, build.versionName, build.versionCode,
+        ))
+        val contract = profile.document.getJSONObject("zeekr1472DualPane")
+        check(contract.getInt("contractVersion") == 1)
+        Zeekr1472DualPane(application, loader, contract).install()
+        ModernXposedRuntime.log("4.9.7.2 car preview: native dual-pane hooks registered")
+    }
+
     fun installDensity(application: Application, configuredDpi: Int): AppleMusicDpiOverrideStatus = AppleMusicDpiOverrideRuntime.install(application,configuredDpi)
     fun densityStatus(): AppleMusicDpiOverrideStatus = AppleMusicDpiOverrideRuntime.status
 

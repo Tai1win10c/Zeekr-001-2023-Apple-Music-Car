@@ -131,6 +131,21 @@ class EmbeddedBootstrapTest {
         )
     }
 
+    @Test
+    fun `1472 car preview requires debug opt-in and the exact stock identity`() {
+        val target = TargetBuild(ModuleConstants.TARGET_PACKAGE, "4.9.7.2", 1472L)
+        val release = EmbeddedBootstrap()
+        val debug = EmbeddedBootstrap(allowCarPreview = true)
+
+        assertFalse(release.supports(target))
+        assertFalse(release.isCarPreview(target))
+        assertFalse(debug.supports(target))
+        assertTrue(debug.isCarPreview(target))
+        assertFalse(debug.isCarPreview(TargetBuild(target.packageName + ".clone", "4.9.7.2", 1472L)))
+        assertFalse(debug.isCarPreview(TargetBuild(target.packageName, "4.9.7.2", 1473L)))
+        assertFalse(debug.isCarPreview(TargetBuild(target.packageName, "6.5.3", 1599L)))
+    }
+
     private fun reader(values: Map<String, Any>): ConfigurationReader =
         object : ConfigurationReader {
             override fun values(): Map<String, *> = values

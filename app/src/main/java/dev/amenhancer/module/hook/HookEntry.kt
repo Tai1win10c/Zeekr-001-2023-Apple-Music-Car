@@ -4,6 +4,7 @@ import dev.amenhancer.module.i18n.ModuleText
 
 import android.app.Application
 import android.util.Log
+import dev.amenhancer.module.BuildConfig
 import dev.amenhancer.module.ModuleConstants
 import dev.amenhancer.module.config.EmbeddedConfigurationMigration
 import dev.amenhancer.module.config.EmbeddedConfigurationMigrationResult
@@ -20,7 +21,7 @@ import java.lang.reflect.Method
 import java.util.concurrent.atomic.AtomicBoolean
 
 class HookEntry : XposedModule() {
-    private val bootstrap = EmbeddedBootstrap()
+    private val bootstrap = EmbeddedBootstrap(allowCarPreview = BuildConfig.DEBUG)
     private val applicationHooksInstalled = AtomicBoolean(false)
     private val resourcePreparationStarted = AtomicBoolean(false)
     private val resourcePreparationFailed = AtomicBoolean(false)
@@ -95,9 +96,10 @@ class HookEntry : XposedModule() {
                         if (application.packageName != targetPackageName) return
                         if (!isTargetMainProcess(application)) return
                         val build = targetBuild(application)
+                        if (bootstrap.isCarPreview(build)) return
                         if (!bootstrap.supports(build)) {
                             ModernXposedRuntime.log(
-                                "embedded build ${build.displayName} is has no verified production profile",
+                                "embedded build ${build.displayName} has no verified production profile",
                             )
                             return
                         }
@@ -156,6 +158,14 @@ class HookEntry : XposedModule() {
                         val application = param.thisObject as? Application ?: return
                         if (application.packageName != targetPackageName) return
                         if (!isTargetMainProcess(application)) return
+                        val build = targetBuild(application)
+                        if (bootstrap.isCarPreview(build)) {
+                            if (param.method != methods.first()) return
+                            if (initializationStarted.compareAndSet(false, true)) {
+                                AppleMusicHostFactory.installZeekr1472Preview(application, targetClassLoader)
+                            }
+                            return
+                        }
                         val config = embeddedConfig ?: return
                         if (!initializationStarted.compareAndSet(false, true)) return
                         val session = embeddedSession ?: return

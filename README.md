@@ -4,7 +4,38 @@
   <img src="docs/images/b851cbb7f571c6666f1a41377baa778b.jpg" alt="AM++ icon" width="180">
 </p>
 
-<h1 align="center">AM++</h1>
+<h1 align="center">Zeekr 001 (2023) Apple Music Car · AM++</h1>
+
+<p align="center">
+  基于 <a href="https://github.com/Zennmn/AM-plus-plus">AM++ (Zennmn/AM-plus-plus)</a> 面向 <strong>2023 款极氪 001（8155 / Android 9 API 28 / arm64-v8a）</strong> 车机的独立侧载适配分支。<br>
+  当前公开里程碑：<strong>preview-08</strong>（Apple Music 4.9.7.2 build 1472）。
+</p>
+
+## 极氪 001 车机版特性（Preview-08）
+
+- **免 Root / 免安装管理器独立侧载**：通过 NPatch (`v1.1.0 build 857`) 内嵌打包，直接作为普通应用同批安装使用。
+- **兼容性修复**（[`scripts/patch-zeekr-1472-host.py`](scripts/patch-zeekr-1472-host.py)）：
+  - 绕过车机 `test-keys` 环境触发的本地 Root 启动限制提示。
+  - 修复车机车载以太网（Ethernet）默认在线场景被判定为“已离线”导致首页与在线歌词无法加载的问题。
+  - 放大横屏（`w640dp`）同步歌词字号至 `36sp`。
+- **横屏原生 44% / 56% 双栏播放器**（[`Zeekr1472DualPane.kt`](host-applemusic/src/main/java/dev/amenhancer/module/hook/Zeekr1472DualPane.kt)）：
+  - 全屏展开播放页时，左侧保留歌曲封面、进度条与播放控制（44%），右侧嵌入 Apple Music 4.9.7.2 原生实时逐字歌词视图（56%）。
+  - 禁用横屏下的竖版动态 `DETAIL_TALL` 遮盖问题，恢复 `DETAIL_SQUARE` 独立方形封面展示。
+- **详细实车适配文档**：见 [`docs/zeekr-001/`](docs/zeekr-001/AppleMusic-AM++车机API28试装.md)。
+
+### 快速安装（Preview-08）
+
+从右侧 **Releases (`preview-08`)** 下载三个拆分 APK（或对应 ZIP），使用 ADB 一键同批安装：
+
+```sh
+adb install-multiple base.apk config.arm64_v8a.apk config.xxhdpi.apk
+```
+
+> 注：需卸载原版 Apple 签名客户端后再安装此内嵌签名套件；不修改任何车机系统文件。
+
+---
+
+## 原版 AM++ 项目说明
 
 <p align="center">
   简体中文 | <a href="README.en.md">English</a>
