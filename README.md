@@ -7,6 +7,12 @@
   基于开源项目 <a href="https://github.com/Zennmn/AM-plus-plus">AM++ (Zennmn/AM-plus-plus)</a> 构建，当前公开里程碑：<strong>preview-08</strong>。
 </p>
 
+## 项目说明
+
+**官方不开发的，我们自己来开发。**
+
+老款 8155 极氪 001 的 Android 9 车机早已停止了很多新体验与三方适配，虽然我们是老韭菜，但感谢大 AI 时代，让个人车主也有能力亲手把想要的体验一点点做出来——让陪伴我们的老车机焕发第二春。
+
 ## 极氪 001 车机版特性（Preview-08）
 
 - **免 Root / 免管理器独立侧载**：通过 [NPatch v1.1.0 build 857](https://github.com/7723mod/NPatch/releases/tag/v1.1.0) 内嵌打包，直接作为普通应用同批安装，无需在车机另装框架，也不修改任何车机系统文件。
