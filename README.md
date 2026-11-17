@@ -1,269 +1,52 @@
 <a id="top"></a>
 
-<p align="center">
-  <img src="docs/images/b851cbb7f571c6666f1a41377baa778b.jpg" alt="AM++ icon" width="180">
-</p>
-
 <h1 align="center">Zeekr 001 (2023) Apple Music Car · AM++</h1>
 
 <p align="center">
-  基于 <a href="https://github.com/Zennmn/AM-plus-plus">AM++ (Zennmn/AM-plus-plus)</a> 面向 <strong>2023 款极氪 001（8155 / Android 9 API 28 / arm64-v8a）</strong> 车机的独立侧载适配分支。<br>
-  当前公开里程碑：<strong>preview-08</strong>（Apple Music 4.9.7.2 build 1472）。
+  面向 <strong>2023 款极氪 001（8155 / Android 9 API 28 / arm64-v8a）</strong> 车机的 Apple Music <code>4.9.7.2 (1472)</code> 独立侧载适配版。<br>
+  基于开源项目 <a href="https://github.com/Zennmn/AM-plus-plus">AM++ (Zennmn/AM-plus-plus)</a> 构建，当前公开里程碑：<strong>preview-08</strong>。
 </p>
 
 ## 极氪 001 车机版特性（Preview-08）
 
-- **免 Root / 免安装管理器独立侧载**：通过 NPatch (`v1.1.0 build 857`) 内嵌打包，直接作为普通应用同批安装使用。
-- **兼容性修复**（[`scripts/patch-zeekr-1472-host.py`](scripts/patch-zeekr-1472-host.py)）：
-  - 绕过车机 `test-keys` 环境触发的本地 Root 启动限制提示。
-  - 修复车机车载以太网（Ethernet）默认在线场景被判定为“已离线”导致首页与在线歌词无法加载的问题。
-  - 放大横屏（`w640dp`）同步歌词字号至 `36sp`。
+- **免 Root / 免管理器独立侧载**：通过 [NPatch v1.1.0 build 857](https://github.com/7723mod/NPatch/releases/tag/v1.1.0) 内嵌打包，直接作为普通应用同批安装，无需在车机另装框架，也不修改任何车机系统文件。
+- **车机兼容性修复**（[`scripts/patch-zeekr-1472-host.py`](scripts/patch-zeekr-1472-host.py)）：
+  - 绕过车机 `test-keys` 系统标识触发的本地 Root 启动限制提示。
+  - 修复车载以太网（Ethernet）在线场景下首页与在线歌词误判为“已离线”的问题。
+  - 放大横屏（`w640dp`）同步歌词字号至 `36sp`，便于中控观看。
 - **横屏原生 44% / 56% 双栏播放器**（[`Zeekr1472DualPane.kt`](host-applemusic/src/main/java/dev/amenhancer/module/hook/Zeekr1472DualPane.kt)）：
-  - 全屏展开播放页时，左侧保留歌曲封面、进度条与播放控制（44%），右侧嵌入 Apple Music 4.9.7.2 原生实时逐字歌词视图（56%）。
-  - 禁用横屏下的竖版动态 `DETAIL_TALL` 遮盖问题，恢复 `DETAIL_SQUARE` 独立方形封面展示。
-- **详细实车适配文档**：见 [`docs/zeekr-001/`](docs/zeekr-001/AppleMusic-AM++车机API28试装.md)。
+  - 展开全屏播放页时，左侧保留歌曲封面、进度条与播放控制（44%），右侧嵌入 Apple Music 4.9.7.2 原生实时逐字歌词视图（56%）。
+  - 禁用横屏下竖版动态 `DETAIL_TALL` 背景遮盖问题，恢复 `DETAIL_SQUARE` 独立方形封面展示。
+- **实车适配与调研文档**：详见 [`docs/zeekr-001/`](docs/zeekr-001/AppleMusic-AM++车机API28试装.md)。
 
-### 快速安装（Preview-08）
+## 快速安装（Preview-08）
 
-从右侧 **Releases (`preview-08`)** 下载三个拆分 APK（或对应 ZIP），使用 ADB 一键同批安装：
+从 GitHub [Releases (`preview-08`)](https://github.com/Tai1win10c/Zeekr-001-2023-Apple-Music-Car/releases/tag/preview-08) 下载三个拆分 APK，使用 ADB 同批安装：
 
 ```sh
 adb install-multiple base.apk config.arm64_v8a.apk config.xxhdpi.apk
 ```
 
-> 注：需卸载原版 Apple 签名客户端后再安装此内嵌签名套件；不修改任何车机系统文件。
+> 注：如车机已安装官方 Apple 签名版客户端，需先卸载后再安装此内嵌签名套件。试装包签名 SHA-256：`08b00b38cd98762bf261952c2c1014c09208ac2c278fd3085421994a516c3e23`。
 
----
+## 关于原版 AM++
 
-## 原版 AM++ 项目说明
+本仓库基于 [Zennmn/AM-plus-plus](https://github.com/Zennmn/AM-plus-plus) 进行车机端定向裁剪与适配。原版 AM++ 是一个面向 Android 的 Apple Music 增强模块（支持 libxposed 与 NPatch 嵌入模式），提供平板横屏双栏、逐行歌词模糊、自定义 TTML 歌词与液态玻璃等特性；由于极氪 001 原生车机仍运行 Android 9（API 28），本项目在其框架基础上专门补齐了 4.9.7.2 低版本宿主适配与车机兼容性补丁。
 
-<p align="center">
-  简体中文 | <a href="README.en.md">English</a>
-</p>
-
-<p align="center">
-  Apple Music 的 Android 增强模块：平板双栏、歌词定制与液态玻璃。
-</p>
-
-<p align="center">
-  <a href="https://github.com/Zennmn/AM-plus-plus/actions/workflows/build.yml"><img src="https://github.com/Zennmn/AM-plus-plus/actions/workflows/build.yml/badge.svg" alt="Build"></a>
-  <a href="https://github.com/Zennmn/AM-plus-plus/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Zennmn/AM-plus-plus" alt="GNU GPL v3.0"></a>
-  <img src="https://img.shields.io/badge/Android-API%2026%2B-3DDC84?logo=android&logoColor=white" alt="Android API 26+">
-  <img src="https://img.shields.io/badge/libxposed-API%20102-7F52FF" alt="libxposed API 102">
-  <a href="#支持项目"><img src="https://img.shields.io/badge/支持项目-微信赞赏-E3B341?logo=wechat&amp;logoColor=white" alt="微信赞赏支持项目"></a>
-</p>
-
-<p align="center">
-  没有lsposed和root？不妨试试<a href="https://github.com/Zennmn/AM-plus-plus/releases/tag/embedded">npatch 嵌入版</a>
-</p>
-
-<details>
-<summary>目录</summary>
-
-1. [项目简介](#项目简介)
-2. [功能](#功能)
-3. [效果展示](#效果展示)
-4. [安装](#安装)
-5. [使用](#使用)
-6. [从源码构建](#从源码构建)
-7. [项目结构](#项目结构)
-8. [路线图](#路线图)
-9. [贡献](#贡献)
-10. [隐私与权限](#隐私与权限)
-11. [许可证与致谢](#许可证与致谢)
-12. [Star History](#star-history)
-13. [支持项目](#支持项目)
-
-</details>
-
-## 项目简介
-
-安装后，在 Apple Music → 设置 → **AM++ 模块设置** 中管理功能。
-
-支持导入 ZIP 插件扩展功能，详见 [插件开发手册](docs/plugin-development.md)。
-
-## 功能
-
-| 功能 | 默认 | 说明 |
-| --- | --- | --- |
-| 平板双栏播放器 | 开启 | 横屏时并排显示播放控件与实时歌词。 |
-| 强制显示蜂窝数据入口 | 关闭 | 在设置中显示原生蜂窝数据选项。 |
-| 双向歌词模糊 | 开启 | 当前歌词保持清晰，前后歌词渐变模糊，支持调节强度（Android 12+）。 |
-| CJK 长尾歌词动画 | 开启 | 为中日韩歌词加入辉光动画。 |
-| 歌曲名显示修正 | 关闭 | 按歌曲原地区、中国大陆或日本显示歌曲名与相关信息。 |
-| 自定义歌词 | 关闭 | 导入、编辑 TTML 歌词，支持在线获取。 |
-| 自动实时补全 | 开启 | 启用自定义歌词后，为缺词、非逐字或缺翻译的歌曲自动查找歌词。 |
-| 歌词字体 | 关闭 | 导入 TTF/OTF 字体，随时恢复原字体。 |
-| 液态玻璃底栏 | 关闭 | 为导航栏和迷你播放器加入液态玻璃效果（Android 13+）。 |
-| ios底栏动画 | 开启 | 手机端随启用ios同款底栏动画，实时生效。 |
-
-## 效果展示
-
-### 自定义歌词注入
-
-<p align="center">
-  <img src="docs/images/bf32d15a3519cef0051d8a208b58ab42.jpg" alt="自定义歌词注入示例一" width="48%">
-  <img src="docs/images/918d640313475d68cf66fff0e63f4e19.jpg" alt="自定义歌词注入示例二" width="48%">
-</p>
-
-### 字体替换
-
-<p align="center">
-  <img src="docs/images/537369a74adc232f855165263c9ff1cc.jpg" alt="MiSans 字体替换前后对比" width="900">
-</p>
-
-### 平板双栏播放器与歌词模糊
-
-<p align="center">
-  <img src="docs/images/tablet-dual-pane-player-open-source-blur.jpg" alt="平板横屏双栏播放器与歌词模糊" width="900">
-</p>
-
-### 液态玻璃底栏
-
-<p align="center">
-  <img src="docs/images/liquid-glass-demo.gif" alt="液态玻璃底栏与迷你播放器动画演示" width="360">
-</p>
-
-## 安装
-
-### Xposed 模块（推荐）
-
-需要 Apple Music 和支持 libxposed API 102 的 Xposed 框架。
-
-1. 从 [Releases](https://github.com/Zennmn/AM-plus-plus/releases/latest) 下载并安装 AM++ APK。
-2. 在 LSPosed 或兼容的 Xposed 管理器中启用 **AM++**。
-3. 作用域只勾选 Apple Music（`com.apple.android.music`）。
-4. 强制停止并重新打开 Apple Music。
-5. 打开 Apple Music → 设置 → “AM++ 模块设置”。
-
-### npatch 嵌入版
-
-没有lsposed和root？不妨试试[npatch 嵌入版](https://github.com/Zennmn/AM-plus-plus/releases/tag/embedded)，无法与官方版共存。
-
-安装包文件名包含 AM++ 版本、Apple Music 版本和构建号，按需选择即可。
-
-## 使用
-
-部分设置需强制停止并重新打开 Apple Music 后生效。
-
-### 自定义歌词
-
-1. 打开“自定义歌词”，启用“自定义歌词替换”。
-2. 点“获取 ID”读取当前歌曲，或手动填写 Apple Music ID。
-3. 粘贴或导入 TTML，也可从 AMLL、AM-Lyrics、Lunabeat 在线获取。
-4. 保存并启用该歌曲的歌词。
-5. 强制停止并重新打开 Apple Music。
-
-歌词支持搜索、编辑、删除和 ZIP 备份恢复；恢复时可选择覆盖或保留已有歌词。手动编写 TTML 可参考 [格式说明](docs/apple-music-ttml-format.md)。
-
-### 歌词字体
-
-1. 在“歌词字体”中选择 TTF 或 OTF 文件。
-2. 导入完成后，强制停止并重新打开 Apple Music。
-3. 点“恢复原字体”并重开 Apple Music 即可还原。
-
-字体仅应用于播放器歌词。
-
-### 液态玻璃底栏
-
-打开“液态玻璃底栏”，强制停止并重新打开 Apple Music，即可为导航栏和迷你播放器应用玻璃效果。
-
-可调节背景模糊强度；手机端还可开启“ios底栏动画”，让底栏随页面滚动自动收起、展开。
-
-### 歌曲名显示修正
-
-打开“歌曲名显示修正”，选择地区模式后重开 Apple Music。关闭时跟随 Apple Music 账号地区。
-
-## 从源码构建
-
-环境：JDK 21、Android SDK 37、Build Tools 37.0.0，使用项目自带的 Gradle Wrapper。
-
-Windows：
-
-```powershell
-.\gradlew.bat test :app:lintDebug :app:lintVitalRelease :app:assembleRelease
-```
-
-Linux 或 macOS：
-
-```bash
-chmod +x gradlew
-./gradlew test :app:lintDebug :app:lintVitalRelease :app:assembleRelease
-```
-
-生成的 Release APK 位于：
-
-```text
-app/build/outputs/apk/release/app-release.apk
-```
-
-构建 Release 前，将 `keystore.properties.example` 复制为 `keystore.properties` 并填写签名信息；无需签名配置可构建 Debug APK。
-
-## 项目结构
-
-```text
-app/src/main/java/        模块入口、设置页与功能装配
-app/src/main/resources/   libxposed 模块元数据
-core/                     配置、歌词、网络来源与布局策略
-host-api/                 宿主能力与事件接口
-hook-runtime/             Xposed 封装与日志
-host-applemusic/           Apple Music 版本适配
-glass/                    液态玻璃渲染
-backdrop/                 上游 Backdrop 库
-docs/                     使用与开发文档
-scripts/                  开发辅助脚本
-```
-
-## 路线图
-
-- [x] 平板横屏双栏播放器
-- [x] 双向歌词模糊
-- [x] 自定义歌词注入与备份恢复
-- [x] 歌词字体导入与恢复
-- [x] 液态玻璃底栏与迷你播放器
-- [x] 歌曲名显示修正
-- [ ] 持续适配后续 Apple Music 版本
-
-## 贡献
-
-欢迎提交 Issue 和 Pull Request。代码改动请通过测试与构建；反馈界面问题时，请附设备型号、系统及 Apple Music 版本、截图或录屏。
-
-开发与适配请参阅 [文档目录](docs/README.md) 和 [宿主适配手册](docs/host-adaptation-guide.md)。
-
-## 隐私与权限
-
-- 仅声明 `INTERNET` 权限，用于歌词获取、翻译补全和歌曲信息查询。
-- 不申请存储或通知运行时权限，本地文件通过系统文件选择器导入。
-- 不含分析服务，也没有独立启动图标。
-- 设置、歌词与字体保存在 Apple Music 私有目录。
+如需从源码自行构建模块或重新生成内嵌试装包，可参考 [`docs/zeekr-001/AppleMusic-AM++车机API28试装.md`](docs/zeekr-001/AppleMusic-AM++车机API28试装.md)。
 
 ## 许可证与致谢
 
-本项目以 [GNU General Public License v3.0](LICENSE) 开源。第三方许可见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+本项目遵循 [GNU General Public License v3.0](LICENSE) 开源，第三方许可声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。感谢以下开源项目与原作者的工作：
 
-- [AMLyricBlur](https://github.com/a23bc/amlyricblur)：歌词模糊。
-- [AndroidLiquidGlass / Backdrop](https://github.com/Kyant0/AndroidLiquidGlass)：液态玻璃效果与交互。
-
-## Star History
-
-<p align="center">
-  <a href="https://www.star-history.com/?repos=Zennmn%2FAM-plus-plus&amp;type=date">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Zennmn/AM-plus-plus&amp;type=date&amp;theme=dark">
-      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Zennmn/AM-plus-plus&amp;type=date">
-      <img src="https://api.star-history.com/chart?repos=Zennmn/AM-plus-plus&amp;type=date" alt="AM++ 的 GitHub Star 历史曲线" width="800">
-    </picture>
-  </a>
-</p>
+- [AM++ (Zennmn/AM-plus-plus)](https://github.com/Zennmn/AM-plus-plus)：原版模块与架构底座。
+- [NPatch](https://github.com/7723mod/NPatch)：免 Root 内嵌打包工具。
+- [AMLyricBlur](https://github.com/a23bc/amlyricblur) / [AndroidLiquidGlass (Backdrop)](https://github.com/Kyant0/AndroidLiquidGlass)：原版 AM++ 上游使用的渲染参考与依赖库。
 
 ## 支持项目
 
-AM++ 免费开源。如果这个项目对你有所帮助，欢迎请作者喝杯咖啡。赞赏完全自愿，不影响任何功能的使用。
+本项目完全免费开源。如果这个极氪 001 车机适配版对你的用车体验有所帮助，欢迎请我喝杯咖啡（赞赏完全自愿，不影响任何功能使用）。
 
-<p align="center">
-  <a href="docs/images/wechat-appreciation.png">
-    <img src="docs/images/wechat-appreciation.png" alt="Zen 的微信赞赏码" width="360">
-  </a>
-</p>
+> *收款码预留位（待补充）*
 
 <p align="right">(<a href="#top">返回顶部</a>)</p>
